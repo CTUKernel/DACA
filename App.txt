@@ -1,0 +1,78 @@
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import ReceiveResult from './pages/receiveResult/receiveResult';
+import ViewHistory from './pages/viewHistory/viewHistory';
+import Logo from './pages/logo/logo';
+import Questionnaire from './pages/questionaire/questionaire';
+import * as Font from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
+
+const Stack = createStackNavigator();
+
+const loadFonts = () => {
+  return Font.loadAsync({
+    'NettoBlack': require('./assets/fonts/Netto-Black.ttf'),
+    'NettoBold': require('./assets/fonts/Netto-Bold.ttf'),
+    'NettoRegular': require('./assets/fonts/Netto-Regular.ttf'),
+  });
+};
+
+
+export default function App() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    const prepare = async () => {
+      try {
+        await loadFonts();
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setFontsLoaded(true);
+      }
+    };
+
+    prepare();
+  }, []);
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+ 
+  return (
+    // <NavigationContainer>
+    //   <Stack.Navigator initialRouteName="Splash">
+    //     <Stack.Screen
+    //       name="Splash"
+    //       component={Logo}
+    //       options={{ headerShown: false }}
+    //     />
+    //     <Stack.Screen
+    //       name="ReceiveResult"
+    //       component={ReceiveResult}
+    //       options={{ headerShown: false }}
+    //       />
+    //   </Stack.Navigator>
+    // </NavigationContainer>
+    <Questionnaire/>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
