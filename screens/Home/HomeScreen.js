@@ -85,7 +85,7 @@ const HomeScreen = ({ navigation }) => {
         setIsProcessing(true); // Khi bắt đầu xử lý, vô hiệu hóa điều hướng
         const imageUrl = await uploadImage(imageUri);
 
-        const response = await fetch("http://34.87.172.192/detect/", {
+        const response = await fetch("http://34.142.176.187/detect/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
