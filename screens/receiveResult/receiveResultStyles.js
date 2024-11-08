@@ -3,8 +3,8 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
-    width: 420,
-    alignItems: "center",
+    alignItems: "center", // Căn giữa phần tử theo chiều ngang
+    justifyContent: "center", // Căn giữa phần tử theo chiều dọc
   },
   OpenLine: {
     width: 250,
@@ -13,10 +13,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 80,
     marginBottom: 20,
-    margin: 45,
+    marginHorizontal: 45,
   },
   ResultCell: {
-    width: 350,
+    width: 350, // Giữ nguyên kích thước như bạn yêu cầu
     height: 350,
     borderWidth: 4,
     borderColor: "#86c8eb",
@@ -96,8 +96,8 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     marginRight: 10,
-    borderWidth: 2, // Border width for the square
-    borderColor: "#FF6347", // Default border color
+    borderWidth: 2,
+    borderColor: "#FF6347",
   },
   legendLabel: {
     fontSize: 16,

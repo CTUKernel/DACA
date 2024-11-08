@@ -3,14 +3,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View, Pressable, ScrollView, Image } from "react-native";
 import styles from "./receiveResultStyles";
 
-// Full legend list with keys matching backend response
-const legendItems = {
-  "0_blackhead": { color: "rgb(255,0,0)", label: "Mụn đầu đen" }, // Red
-  "1_whitehead": { color: "rgb(0,255,0)", label: "Mụn đầu trắng" }, // Green
-  "2_nodule": { color: "rgb(0,0,255)", label: "Mụn bọc" }, // Blue
-  "3_pustule": { color: "rgb(255,255,0)", label: "Mụn mủ" }, // Yellow
-  "4_papule": { color: "rgb(0,255,255)", label: "Mụn sần" }, // Cyan
-};
+const legendItems = [
+  { color: "rgb(255,0,0)", label: "Mụn đầu đen" }, // Red
+  { color: "rgb(0,255,0)", label: "Mụn đầu trắng" }, // Green
+  { color: "rgb(0,0,255)", label: "Mụn bọc" }, // Blue
+  { color: "rgb(255,255,0)", label: "Mụn mủ" }, // Yellow
+  { color: "rgb(0,255,255)", label: "Mụn sần" }, // Cyan
+];
 
 // Function to process the response and determine what to display
 export async function processResponse() {
@@ -21,26 +20,19 @@ export async function processResponse() {
 
       // Check if acne is detected or not
       if (parsedData?.data?.message === "No acne detected.") {
-        return { message: "No acne detected", imageUrl: null, acneTypes: {} };
+        return { message: "No acne detected", imageUrl: null };
       }
 
-      // Otherwise, check for an image URL and number of acne types
-      if (
-        parsedData?.data?.detected_image_url &&
-        parsedData?.data?.number_of_acnes
-      ) {
-        return {
-          imageUrl: parsedData.data.detected_image_url,
-          message: null,
-          acneTypes: parsedData.data.number_of_acnes || {}, // Ensure acneTypes is always an object
-        };
+      // Otherwise, check for an image URL
+      if (parsedData?.data?.detected_image_url) {
+        return { imageUrl: parsedData.data.detected_image_url, message: null };
       }
     }
     console.log("No image URL or message found in storage");
-    return { acneTypes: {} }; // Return an empty object if no data is found
+    return null;
   } catch (error) {
     console.error("Error fetching data from AsyncStorage:", error);
-    return { acneTypes: {} }; // Handle error and return empty object
+    return null;
   }
 }
 
@@ -89,13 +81,7 @@ export function ReceiveResult({ navigation }) {
     );
   }
 
-  // Ensure resultData.acneTypes is a valid object
-  const detectedAcneTypes = resultData.acneTypes
-    ? Object.keys(resultData.acneTypes).filter(
-        (key) => resultData.acneTypes[key] > 0
-      )
-    : [];
-
+  // Case 2: Acne detected, show result image and legend
   return (
     <View style={styles.Container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -117,17 +103,15 @@ export function ReceiveResult({ navigation }) {
 
         {/* Legend section */}
         <View style={styles.legendContainer}>
-          {detectedAcneTypes.map((acneTypeKey, index) => (
+          {legendItems.map((item, index) => (
             <View key={index} style={styles.legendItem}>
               <View
                 style={[
                   styles.legendColorBox,
-                  { borderColor: legendItems[acneTypeKey].color }, // Apply border color dynamically
+                  { borderColor: item.color }, // Apply border color dynamically
                 ]}
               />
-              <Text style={styles.legendLabel}>
-                {legendItems[acneTypeKey].label}
-              </Text>
+              <Text style={styles.legendLabel}>{item.label}</Text>
             </View>
           ))}
         </View>
